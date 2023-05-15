@@ -5,27 +5,33 @@ const keys = calculator.querySelector('.calculator__keys')
 const display = document.querySelector('.calculator__display')
 
 keys.addEventListener('click', e => {
-
+  
   const calculate = (n1, operator, n2) => {
     let result = ''
-
+  
     if (operator === 'add') {
       result = parseFloat(n1) + parseFloat(n2)
-
+  
     } else if (operator === 'subtract') {
       result = parseFloat(n1) - parseFloat(n2)
-
+  
     } else if (operator === 'multiply') {
       result = parseFloat(n1) * parseFloat(n2)
-
+  
     } else if (operator === 'divide') {
       result = parseFloat(n1) / parseFloat(n2)
-
+  
     }
-
+  
     return result
   }
 
+  const clear = (n1, operator, n2) => {
+
+    n1 = ''
+    n2 = '0'
+    operator = undefined
+  }
 
   if (e.target.matches('button')) {
     const key = e.target
@@ -33,6 +39,7 @@ keys.addEventListener('click', e => {
     const keyContent = key.textContent
     const displayedNum = display.textContent
     const previousKeyType = calculator.dataset.previousKeyType
+
 
 
     if (
@@ -79,11 +86,11 @@ keys.addEventListener('click', e => {
 
     if (action === 'decimal') {
 
-      if (!displayedNum.includes('.')) {
-        display.textContent = displayedNum + '.'
-
-      } else if (previousKeyType === 'operator') {
+      if (previousKeyType === 'operator') {
         display.textContent = '0.'
+
+      } else if (!displayedNum.includes('.')) {
+        display.textContent = displayedNum + '.'
       }
 
       calculator.dataset.previousKeyType = 'decimal'
@@ -92,7 +99,11 @@ keys.addEventListener('click', e => {
 
 
     if (action === 'clear') {
-      display.textContent = '0'
+      const firstValue = calculator.dataset.firstValue
+      const operator = calculator.dataset.operator
+      const secondValue = displayedNum
+      display.textContent = clear(firstValue, operator, secondValue)
+
       calculator.dataset.previousKeyType = 'clear'
       console.log('clear key!')
     }
@@ -107,6 +118,7 @@ keys.addEventListener('click', e => {
       calculator.dataset.previousKeyType = 'calculate'
       console.log('equal key!')
     }
+
 
 
     Array.from(key.parentNode.children).forEach(k => k.classList.remove('is-depressed'))
